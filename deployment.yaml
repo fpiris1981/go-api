@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-api-deployment
+  labels:
+    app: go-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-api
+  template:
+    metadata:
+      labels:
+        app: go-api
+    spec:
+      containers:
+      - name: go-api
+        image: us-east1-docker.pkg.dev/gcp-go-tutorial-444621/go-api-docker-repo/go-api:v2
+        ports:
+        - containerPort: 8080
