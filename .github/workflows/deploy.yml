@@ -19,7 +19,7 @@ jobs:
       uses: hashicorp/vault-action@v2
       with:
         method: github
-        url: https://api.cloud.hashicorp.com/secrets/2023-11-28/organizations/d13ef1b7-9fde-47cd-b6f7-c1523ced3661/projects/0b0c3e9f-ab26-4cce-8c3c-b336f2c8d27b/apps/gke-go-app/
+        url: https://api.cloud.hashicorp.com/secrets/us-east1/default-project/gke-go-app
         githubToken: ${{secrets.GITHUB_TOKEN}}
         secrets: |
           gke-go-app/_gke_go_api_service_account value | GCP_SA_KEY
