@@ -14,22 +14,11 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Retrieve Secrets from HCP Vault
-    - name: Retrieve Secrets from HCP Vault
-      uses: hashicorp/vault-action@v2
-      with:
-        method: github
-        url: https://api.cloud.hashicorp.com/secrets/us-east1/default-project/gke-go-app
-        githubToken: ${{secrets.GITHUB_TOKEN}}
-        secrets: |
-          gke-go-app/_gke_go_api_service_account value | GCP_SA_KEY
-
-    # Step 3: Save GCP Service Account Key
-    - name: Save Service Account Key
-      env:
-        GCP_SA_KEY: ${{ env.GCP_SA_KEY }}
+      #steps 2 and 3 in just one cause I have integrations with Vault
+    - name: Save GCP Service Account Key
       run: |
-        echo "${{ env.GCP_SA_KEY }}" > gcp-key.json
+        echo "${{ secrets.GCP_SA_KEY }}" > gcp-key.json
+
 
     # Step 4: Authenticate with GCP
     - name: Authenticate with GCP
