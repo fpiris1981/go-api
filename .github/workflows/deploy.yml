@@ -1,0 +1,43 @@
+name: CI/CD Pipeline for GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout Code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Retrieve Secrets from HCP Vault
+    - name: Retrieve Secrets from HCP Vault
+      uses: hashicorp/vault-action@v2
+      with:
+        method: github
+        url: https://portal.cloud.hashicorp.com/services/secrets/apps/gke-go-app/secrets?project_id=0b0c3e9f-ab26-4cce-8c3c-b336f2c8d27b
+        secrets: |
+          gke-go-app/_gke_go_api_service_account value | GCP_SA_KEY
+
+    # Step 3: Save GCP Service Account Key
+    - name: Save Service Account Key
+      run: |
+        echo "${{ env.GCP_SA_KEY }}" > gcp-key.json
+
+    # Step 4: Authenticate with GCP
+    - name: Authenticate with GCP
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: gcp-key.json
+      run: |
+        gcloud auth activate-service-account --key-file=gcp-key.json
+        gcloud config set project gcp-go-tutorial-444621
+
+    # Step 5: Deploy to GKE
+    - name: Deploy to GKE Dev Cluster
+      run: |
+        kubectl config use-context gke-dev-cluster
+        kubectl set image deployment/go-api-deployment go-api=us-east1-docker.pkg.dev/gcp-go-tutorial-444621/go-api-docker-repo/go-api:${{ github.sha }}
