@@ -20,11 +20,14 @@ jobs:
       with:
         method: github
         url: https://portal.cloud.hashicorp.com/services/secrets/apps/gke-go-app/secrets?project_id=0b0c3e9f-ab26-4cce-8c3c-b336f2c8d27b
+        githubToken: ${{secrets.GITHUB_TOKEN}}
         secrets: |
           gke-go-app/_gke_go_api_service_account value | GCP_SA_KEY
 
     # Step 3: Save GCP Service Account Key
     - name: Save Service Account Key
+      env:
+        GCP_SA_KEY: ${{ env.GCP_SA_KEY }}
       run: |
         echo "${{ env.GCP_SA_KEY }}" > gcp-key.json
 
