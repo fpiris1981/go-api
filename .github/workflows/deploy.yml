@@ -17,7 +17,7 @@ jobs:
       #steps 2 and 3 in just one cause I have integrations with Vault
     - name: Save GCP Service Account Key
       run: |
-        echo "${{ secrets._GKE_GO_API_SERVICE_ACCOUNT }}" > gcp-key.json
+        echo "${{ secrets._GKE_GO_API_SERVICE_ACCOUNT }}" | sed 's/\\n/\n/g' > gcp-key.json
         cat gcp-key.json | jq . # Verify the JSON structure
 
     - name: Debug GCP_SA_KEY Content
