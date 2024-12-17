@@ -32,11 +32,11 @@ jobs:
         gcloud auth activate-service-account --key-file=gcp-key.json
         gcloud config set project gcp-go-tutorial-444621
 
-    - name: Enable GKE Auth Plugin
+    - name: Install gke-gcloud-auth-plugin Manually
       run: |
-          echo "Enabling GKE Auth Plugin..."
-          gcloud auth configure-docker --quiet
-          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+          curl -LO https://storage.googleapis.com/cloud-sdk-release/gke-gcloud-auth-plugin/linux-amd64/gke-gcloud-auth-plugin
+          chmod +x gke-gcloud-auth-plugin
+          sudo mv gke-gcloud-auth-plugin /usr/local/bin/
 
     - name: Get GKE cluster creds
       run: |
