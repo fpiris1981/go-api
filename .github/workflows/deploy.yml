@@ -32,6 +32,12 @@ jobs:
         gcloud auth activate-service-account --key-file=gcp-key.json
         gcloud config set project gcp-go-tutorial-444621
 
+    - name: Get GKE cluster creds
+      run: |
+        gcloud container clusters get-credentials gke-dev-cluster \
+        --region us-east1 \
+        --project gcp-go-tutorial-444621
+
     # Step 5: Deploy to GKE
     - name: Deploy to GKE Dev Cluster
       run: |
