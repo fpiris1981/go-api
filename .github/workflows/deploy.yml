@@ -40,8 +40,7 @@ jobs:
 
     - name: Install gke-gcloud-auth-plugin
       run: |
-        gcloud components install gke-gcloud-auth-plugin
-        gcloud components update
+        sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
 
     # Step 5: Deploy to GKE
     - name: Deploy to GKE Dev Cluster
