@@ -41,5 +41,4 @@ jobs:
     # Step 5: Deploy to GKE
     - name: Deploy to GKE Dev Cluster
       run: |
-        kubectl config use-context gke-dev-cluster
         kubectl set image deployment/go-api-deployment go-api=us-east1-docker.pkg.dev/gcp-go-tutorial-444621/go-api-docker-repo/go-api:${{ github.sha }}
