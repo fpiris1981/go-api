@@ -38,6 +38,11 @@ jobs:
         --region us-east1 \
         --project gcp-go-tutorial-444621
 
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        gcloud components install gke-gcloud-auth-plugin
+        gcloud components update
+
     # Step 5: Deploy to GKE
     - name: Deploy to GKE Dev Cluster
       run: |
