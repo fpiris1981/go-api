@@ -7,7 +7,7 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "It's working")
+	fmt.Fprintf(w, "It's working and deploying automatically")
 }
 
 func main() {
