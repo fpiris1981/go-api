@@ -14,40 +14,27 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Save GCP Service Account Key
-      run: |
-        echo "${{ secrets._GKE_GO_API_SERVICE_ACCOUNT }}" | base64 --decode > gcp-key.json
-        cat gcp-key.json | jq . # Verify JSON structure
-
-    - name: Debug GCP_SA_KEY Content
-      run: |
-        echo "Secret content:"
-        echo "${{ secrets._GKE_GO_API_SERVICE_ACCOUNT }}"
-
-    # Step 4: Authenticate with GCP
+    # Step 2: Authenticate with GCP and Setup gcloud
     - name: Authenticate with GCP
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: gcp-key.json
-      run: |
-        gcloud auth activate-service-account --key-file=gcp-key.json
-        gcloud config set project gcp-go-tutorial-444621
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets._GKE_GO_API_SERVICE_ACCOUNT }}
 
-    - name: Install gke-gcloud-auth-plugin
-      run: |
-          export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
-          curl -sSL https://sdk.cloud.google.com | bash
-          source "$HOME/google-cloud-sdk/path.bash.inc"
-          gcloud components install gke-gcloud-auth-plugin --quiet
-          gke-gcloud-auth-plugin --version
-      
+    - name: Set Up gcloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: "latest"
+        install_components: 'gke-gcloud-auth-plugin'
 
-    - name: Get GKE cluster creds
+    # Step 3: Get GKE Cluster Credentials
+    - name: Get GKE Cluster Credentials
       run: |
         gcloud container clusters get-credentials gke-dev-cluster \
-        --region us-east1 \
-        --project gcp-go-tutorial-444621
+          --region us-east1 \
+          --project gcp-go-tutorial-444621
 
-    # Step 5: Deploy to GKE
+    # Step 4: Deploy to GKE
     - name: Deploy to GKE Dev Cluster
       run: |
-        kubectl set image deployment/go-api-deployment go-api=us-east1-docker.pkg.dev/gcp-go-tutorial-444621/go-api-docker-repo/go-api:${{ github.sha }}
+        kubectl set image deployment/go-api-deployment \
+          go-api=us-east1-docker.pkg.dev/gcp-go-tutorial-444621/go-api-docker-repo/go-api:${{ github.sha }}
